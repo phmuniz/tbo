@@ -1,11 +1,10 @@
 #include "eratosthenes.h"
-#include "node.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 struct Eratosthenes {
 
-    Node ** vector;
+    int * vector;
     int size;
     int index;
 };
@@ -14,42 +13,31 @@ Eratosthenes * eratosthenesConstructor(int n) {
 
     Eratosthenes * e = calloc(1, sizeof(Eratosthenes));
 
-    e->size = n - 1;
+    e->size = n + 1;
 
-    e->vector = calloc(e->size, sizeof(Node*));
+    e->vector = calloc(e->size, sizeof(int));
 
-    for(int i = 2; i <= n; i++) {
+    for(int i = 0; i < e->size; i++) {
 
-        Node * node = nodeConstructor(i);
-
-        e->vector[i-2] = node;
+        e->vector[i] = 0;
     }
 
-    e->index = 0;
+    e->index = 2;
 }
 
 void markMultiples(Eratosthenes * e) {
 
-    Node * currentNode = e->vector[e->index];
+    for(int i = 2 * e->index; i < e->size; i += e->index) {
 
-    int currentPrimeNumber = nodeGetValue(currentNode);
-
-    for(int i = e->index + 1; i < e->size; i++) {
-
-        Node * node = e->vector[i];
-        int value = nodeGetValue(node);
-
-        if(value % currentPrimeNumber == 0) nodeMark(node);
+        e->vector[i] = 1;
     }
 }
 
 bool findNext(Eratosthenes * e) {
 
     for(int i = e->index + 1; i < e->size; i++) {
-
-        Node * node = e->vector[i];
         
-        if(!nodeIsMarked(node)) {
+        if(!e->vector[i]) {
             e->index = i;
             return true;
         }
@@ -60,26 +48,18 @@ bool findNext(Eratosthenes * e) {
 
 void printPrimeNumbers(Eratosthenes * e) {
 
-    for(int i = 0; i < e->size; i++) {
+    for(int i = 2; i < e->size; i++) {
 
-        Node * node = e->vector[i];
+        int marked = e->vector[i];
 
-        if(!nodeIsMarked(node)) {
-
-            int value = nodeGetValue(node);
+        if(!marked) {
     
-            printf("%d\n", value);
+            printf("%d\n", i);
         }
     }
 }
 
 void eratosthenesDestructor(Eratosthenes * e) {
-
-    for(int i = 0; i < e->size; i++) {
-
-        Node * node = e->vector[i];
-        nodeDestructor(node);
-    }
 
     free(e->vector);
     free(e);

@@ -17,7 +17,7 @@ int main() {
         if(!findNext(e)) break;
     }
 
-    printPrimeNumbers(e);
+    //printPrimeNumbers(e);
 
     eratosthenesDestructor(e);
 
